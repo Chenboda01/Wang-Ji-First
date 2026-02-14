@@ -11,6 +11,52 @@
   --shadow: 0 20px 50px rgba(9, 38, 63, 0.12);
 }
 
+body[data-theme='dark'] {
+  --bg-gradient-a: #162130;
+  --bg-gradient-b: #0f1623;
+  --panel: #1d2a3a;
+  --panel-border: #33465d;
+  --text: #e6edf5;
+  --muted: #9fb0c3;
+  --accent: #47a6ff;
+  --accent-strong: #2d8adb;
+  --danger: #ff6f86;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+body[data-theme='google'] {
+  --bg-gradient-a: #f8fbff;
+  --bg-gradient-b: #fff7f2;
+  --accent: #1a73e8;
+  --accent-strong: #0f5abb;
+  --danger: #d93025;
+}
+
+body[data-theme='neon'] {
+  --bg-gradient-a: #0f1729;
+  --bg-gradient-b: #1a0a2f;
+  --panel: #131e34;
+  --panel-border: #2e4c72;
+  --text: #dff6ff;
+  --muted: #9fb8d7;
+  --accent: #00d6ff;
+  --accent-strong: #00abd6;
+  --danger: #ff4c8e;
+  --shadow: 0 20px 50px rgba(2, 8, 20, 0.5);
+}
+
+body[data-theme='pastel'] {
+  --bg-gradient-a: #fff7ea;
+  --bg-gradient-b: #f2f8ff;
+  --panel: #fffdf9;
+  --panel-border: #e4dece;
+  --text: #3c3144;
+  --muted: #7d6e86;
+  --accent: #e18f4d;
+  --accent-strong: #c97534;
+  --danger: #c44f67;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -24,6 +70,15 @@ body {
     radial-gradient(1200px 500px at 0% -20%, rgba(72, 154, 255, 0.14), transparent),
     radial-gradient(1000px 500px at 110% 10%, rgba(255, 144, 80, 0.12), transparent),
     linear-gradient(150deg, var(--bg-gradient-a), var(--bg-gradient-b));
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+body.has-image {
+  background-image:
+    linear-gradient(150deg, color-mix(in oklab, var(--bg-gradient-a) 52%, transparent), color-mix(in oklab, var(--bg-gradient-b) 52%, transparent)),
+    var(--bg-image);
+  background-position: center;
 }
 
 .app {
@@ -33,7 +88,59 @@ body {
 }
 
 .app__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.settings {
+  position: relative;
+}
+
+.settings-toggle {
+  background: color-mix(in oklab, var(--panel) 88%, #f0f6fb);
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  padding: 0.5rem 0.8rem;
+}
+
+.settings-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 2;
+  width: min(280px, 78vw);
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--panel) 96%, white 4%);
+  box-shadow: var(--shadow);
+}
+
+.settings-panel label {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.settings-panel select,
+.settings-panel input[type='file'],
+.settings-panel input[type='color'] {
+  width: 100%;
+  border: 1px solid #b7c5d4;
+  border-radius: 10px;
+  padding: 0.45rem;
+  background: #fff;
+  color: #1c2630;
+}
+
+.clear-bg {
+  background: #eef4fa;
+  color: #2b4f71;
+  padding: 0.5rem 0.65rem;
 }
 
 .eyebrow {
@@ -202,6 +309,18 @@ button {
 @media (max-width: 640px) {
   .app {
     padding-top: 1.4rem;
+  }
+
+  .app__header {
+    align-items: stretch;
+  }
+
+  .settings {
+    margin-left: auto;
+  }
+
+  .settings-panel {
+    right: 0;
   }
 
   .todo-form {

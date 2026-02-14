@@ -13,6 +13,30 @@
           <p class="eyebrow">Task Manager</p>
           <h1 id="app-title">TODO List</h1>
         </div>
+
+        <div class="settings">
+          <button id="settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="settings-panel">
+            Settings
+          </button>
+          <section id="settings-panel" class="settings-panel" aria-label="Appearance settings" hidden>
+            <label for="theme-select">Theme</label>
+            <select id="theme-select" name="theme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="google">Google Colors</option>
+              <option value="neon">Neon</option>
+              <option value="pastel">Pastel</option>
+              <option value="custom">Custom Color</option>
+            </select>
+
+            <label id="custom-color-label" for="custom-color" hidden>Custom color</label>
+            <input id="custom-color" type="color" value="#1769aa" hidden />
+
+            <label for="bg-upload">Background image</label>
+            <input id="bg-upload" type="file" accept="image/png,image/jpeg,image/svg+xml" />
+            <button id="clear-bg" type="button" class="clear-bg">Remove image</button>
+          </section>
+        </div>
       </header>
 
       <section class="card" aria-label="Create a task">
