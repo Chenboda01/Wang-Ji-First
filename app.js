@@ -9,6 +9,7 @@ const emptyState = document.querySelector('#empty-state');
 const itemTemplate = document.querySelector('#todo-item-template');
 const settingsToggle = document.querySelector('#settings-toggle');
 const settingsPanel = document.querySelector('#settings-panel');
+const settingsClose = document.querySelector('#settings-close');
 const themeSelect = document.querySelector('#theme-select');
 const customColor = document.querySelector('#custom-color');
 const customColorLabel = document.querySelector('#custom-color-label');
@@ -92,9 +93,15 @@ list.addEventListener('change', (event) => {
 });
 
 settingsToggle.addEventListener('click', () => {
-  const nextState = settingsPanel.hidden;
-  settingsPanel.hidden = !nextState;
-  settingsToggle.setAttribute('aria-expanded', String(nextState));
+  if (settingsPanel.hidden) {
+    openSettingsPanel();
+    return;
+  }
+  closeSettingsPanel();
+});
+
+settingsClose.addEventListener('click', () => {
+  closeSettingsPanel();
 });
 
 document.addEventListener('click', (event) => {
@@ -180,6 +187,13 @@ function persistTodos() {
 function closeSettingsPanel() {
   settingsPanel.hidden = true;
   settingsToggle.setAttribute('aria-expanded', 'false');
+  settingsToggle.setAttribute('aria-label', 'Open settings');
+}
+
+function openSettingsPanel() {
+  settingsPanel.hidden = false;
+  settingsToggle.setAttribute('aria-expanded', 'true');
+  settingsToggle.setAttribute('aria-label', 'Close settings');
 }
 
 function applySettings() {
