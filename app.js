@@ -21,6 +21,7 @@ let settings = loadSettings();
 
 applySettings();
 render();
+initSettingsUi();
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -92,72 +93,6 @@ list.addEventListener('change', (event) => {
   render();
 });
 
-settingsToggle.addEventListener('click', () => {
-  if (settingsPanel.hidden) {
-    openSettingsPanel();
-    return;
-  }
-  closeSettingsPanel();
-});
-
-settingsClose.addEventListener('click', () => {
-  closeSettingsPanel();
-});
-
-document.addEventListener('click', (event) => {
-  const target = event.target;
-  if (!(target instanceof Node)) {
-    return;
-  }
-
-  if (!settingsPanel.hidden && !settingsPanel.contains(target) && !settingsToggle.contains(target)) {
-    closeSettingsPanel();
-  }
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeSettingsPanel();
-  }
-});
-
-themeSelect.addEventListener('change', () => {
-  settings.theme = themeSelect.value;
-  persistSettings();
-  applySettings();
-});
-
-customColor.addEventListener('input', () => {
-  settings.customColor = customColor.value;
-  persistSettings();
-  if (settings.theme === 'custom') {
-    applySettings();
-  }
-});
-
-bgUpload.addEventListener('change', async () => {
-  const file = bgUpload.files && bgUpload.files[0];
-  if (!file) {
-    return;
-  }
-
-  const isValidType = ['image/png', 'image/jpeg', 'image/svg+xml'].includes(file.type);
-  if (!isValidType) {
-    return;
-  }
-
-  settings.backgroundImage = await fileToDataUrl(file);
-  persistSettings();
-  applySettings();
-  bgUpload.value = '';
-});
-
-clearBg.addEventListener('click', () => {
-  settings.backgroundImage = '';
-  persistSettings();
-  applySettings();
-});
-
 function render() {
   list.innerHTML = '';
 
@@ -185,18 +120,110 @@ function persistTodos() {
 }
 
 function closeSettingsPanel() {
+  if (!settingsPanel || !settingsToggle) {
+    return;
+  }
   settingsPanel.hidden = true;
   settingsToggle.setAttribute('aria-expanded', 'false');
   settingsToggle.setAttribute('aria-label', 'Open settings');
 }
 
 function openSettingsPanel() {
+  if (!settingsPanel || !settingsToggle) {
+    return;
+  }
   settingsPanel.hidden = false;
   settingsToggle.setAttribute('aria-expanded', 'true');
   settingsToggle.setAttribute('aria-label', 'Close settings');
 }
 
+function initSettingsUi() {
+  if (
+    !settingsToggle ||
+    !settingsPanel ||
+    !themeSelect ||
+    !customColor ||
+    !customColorLabel ||
+    !bgUpload ||
+    !clearBg
+  ) {
+    return;
+  }
+
+  settingsToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (settingsPanel.hidden) {
+      openSettingsPanel();
+      return;
+    }
+    closeSettingsPanel();
+  });
+
+  if (settingsClose) {
+    settingsClose.addEventListener('click', () => {
+      closeSettingsPanel();
+    });
+  }
+
+  settingsPanel.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener('click', () => {
+    if (!settingsPanel.hidden) {
+      closeSettingsPanel();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeSettingsPanel();
+    }
+  });
+
+  themeSelect.addEventListener('change', () => {
+    settings.theme = themeSelect.value;
+    persistSettings();
+    applySettings();
+  });
+
+  customColor.addEventListener('input', () => {
+    settings.customColor = customColor.value;
+    persistSettings();
+    if (settings.theme === 'custom') {
+      applySettings();
+    }
+  });
+
+  bgUpload.addEventListener('change', async () => {
+    const file = bgUpload.files && bgUpload.files[0];
+    if (!file) {
+      return;
+    }
+
+    const isValidType = ['image/png', 'image/jpeg', 'image/svg+xml'].includes(file.type);
+    if (!isValidType) {
+      return;
+    }
+
+    settings.backgroundImage = await fileToDataUrl(file);
+    persistSettings();
+    applySettings();
+    bgUpload.value = '';
+  });
+
+  clearBg.addEventListener('click', () => {
+    settings.backgroundImage = '';
+    persistSettings();
+    applySettings();
+  });
+}
+
 function applySettings() {
+  if (!themeSelect || !customColor || !customColorLabel) {
+    return;
+  }
+
   const resolvedTheme = getTheme(settings.theme);
   themeSelect.value = resolvedTheme;
   customColor.value = settings.customColor;
